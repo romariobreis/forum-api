@@ -1,25 +1,26 @@
-import { expect, test } from 'vitest'
-import { AnswerQuestionUseCase } from '../answer-question.js'
-import type { AnswerRepository } from '@/domain/repositories/answer-repository.js'
-import type { Answer } from '@/domain/forum/enterprise/entities/answer.js'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { InMemoryAnswerRepository } from '../../../../../../test/repositories/in-memory-answer-repository.js';
+import { AnswerQuestionUseCase } from '../answer-question.js';
 
-const fakeAnswerRepository: AnswerRepository = {
-  create: async (answer: Answer) => { return; }
-}
+let inMemoryAnswerRepository: InMemoryAnswerRepository
+let sut: AnswerQuestionUseCase
 
-test('Create a answer', async () => {
-  const answerQuestion = new AnswerQuestionUseCase(fakeAnswerRepository)
-
-  const answer = await answerQuestion.execute({
-    instructorId: '3bbc81b5-70bf-4e89-ad05-b7efefbe32ae',
-    questionId: '3bbc81b5-69bf-4e89-7f05-b7efefbe32ae',
-    content: 'test'
+describe('Create a question', () => {
+  beforeEach(() => {
+    inMemoryAnswerRepository = new InMemoryAnswerRepository()
+    sut = new AnswerQuestionUseCase(inMemoryAnswerRepository)
   })
 
-  console.log({ answer })
+  it('should be able to create a answer question', async () => {
+    const { answer } = await sut.execute({
+      instructorId: '3bbc81b5-70bf-4e89-ad05-b7efefbe32ae',
+      questionId: '3bbc81b5-69bf-4e89-7f05-b7efefbe32ae',
+      content: 'test'
+    })
 
-  expect(answer.id).toEqual(expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i))
-  expect(answer.content).toEqual('test')
-  expect(answer.authorId).toEqual('3bbc81b5-70bf-4e89-ad05-b7efefbe32ae')
-  expect(answer.questionId).toEqual('3bbc81b5-69bf-4e89-7f05-b7efefbe32ae')
+    expect(answer.id).toEqual(expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i))
+    expect(answer.content).toEqual('test')
+    expect(answer.authorId).toEqual('3bbc81b5-70bf-4e89-ad05-b7efefbe32ae')
+    expect(answer.questionId).toEqual('3bbc81b5-69bf-4e89-7f05-b7efefbe32ae')
+  })
 })
