@@ -7,4 +7,8 @@ export class InMemoryQuestionRepository implements QuestionRepository {
   async create(question: Question) {
     this.questions.push(question)
   }
+
+  async findBySlug(slug: string) {
+    return this.questions.find(question => question.slug.value === slug) ?? null
+  }
 }
