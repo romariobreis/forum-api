@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { InMemoryQuestionRepository } from '../../../../../../test/repositories/in-memory-question-repository.js';
 import { GetQuestionBySlugUseCase } from '../get-question-by-slug.js';
-import { Question } from '@/domain/forum/enterprise/entities/question.js';
-import { UniqueEntityId } from '@/core/entities/unique-entity-id.js';
+import { makeQuestion } from '../../../../../../test/factories/make-question.js';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository
 let sut: GetQuestionBySlugUseCase
@@ -14,11 +13,7 @@ describe('Get Question By Slug', () => {
   })
 
   it('should be able to get question by slug', async () => {
-    const newQuestion = Question.create({
-      authorId: new UniqueEntityId(),
-      title: 'First question',
-      content: 'test question'
-    })
+    const newQuestion = makeQuestion()
 
     inMemoryQuestionRepository.create(newQuestion)
 
