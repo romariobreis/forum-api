@@ -6,7 +6,7 @@ import dayjs from "dayjs"
 
 export interface QuestionProps {
   authorId: UniqueEntityId
-  // bestAnswerId: UniqueEntityId
+  bestAnswerId?: UniqueEntityId
   title: string
   slug: Slug
   content: string
@@ -40,18 +40,18 @@ export class Question extends Entity<QuestionProps> {
     return this.props.updatedAt
   }
 
-  // get bestAnswerId() {
-  //   return this.props.bestAnswerId
-  // }
+  get bestAnswerId() {
+    return this.props.bestAnswerId?.toValue()
+  }
 
   get isNew() {
     return dayjs().diff(this.props.createdAt, 'days') <= 3
   }
 
-  // set bestAnswerId(bestAnswerId: UniqueEntityId) {
-  //   this.props.bestAnswerId = bestAnswerId
-  //   this.touch()
-  // }
+  set bestAnswerId(bestAnswerId: UniqueEntityId) {
+    this.props.bestAnswerId = bestAnswerId
+    this.touch()
+  }
 
   set content(content: string) {
     this.props.content = content
