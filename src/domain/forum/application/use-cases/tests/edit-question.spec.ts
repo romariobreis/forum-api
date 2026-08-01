@@ -26,10 +26,10 @@ describe('Edit a Question', () => {
     const newTitle = faker.lorem.sentence()
     const newContent = faker.lorem.text()
 
-    await sut.execute({ questionId: newQuestion.id.toString(), authorId: newQuestion.authorId, title: newTitle, content: newContent })
+    const { question } = await sut.execute({ questionId: newQuestion.id.toString(), authorId: newQuestion.authorId, title: newTitle, content: newContent })
 
-    expect(inMemoryQuestionRepository.questions[0]?.title).toEqual(newTitle)
-    expect(inMemoryQuestionRepository.questions[0]?.content).toEqual(newContent)
+    expect(question.title).toEqual(newTitle)
+    expect(question.content).toEqual(newContent)
     await expect(() =>
       sut.execute({
         questionId: newQuestion2.id.toString(),
