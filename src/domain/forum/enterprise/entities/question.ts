@@ -71,7 +71,7 @@ export class Question extends Entity<QuestionProps> {
   static create(props: Optional<QuestionProps, 'createdAt' | 'slug'>, id?: UniqueEntityId) {
     return new Question({
       ...props,
-      createdAt: new Date(),
+      createdAt: props.createdAt ?? new Date(),
       slug: props.slug ?? Slug.createFromText(props.title)
     }, id)
   }
