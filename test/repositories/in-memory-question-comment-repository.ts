@@ -7,4 +7,20 @@ export class InMemoryQuestionCommentRepository implements QuestionCommentReposit
   async create(questionComment: QuestionComment) {
     this.questionComments.push(questionComment)
   }
+
+  async findById(questionId: string) {
+    const questionComment = this.questionComments.find(item => item.id.toString() === questionId)
+
+    if (!questionComment) {
+      throw new Error('Quest comment not found.')
+    }
+
+    return questionComment
+  }
+
+  async delete(questionComment: QuestionComment) {
+    const itemIndex = this.questionComments.findIndex(item => item.id === questionComment.id)
+
+    this.questionComments.splice(itemIndex, 1)
+  }
 }
