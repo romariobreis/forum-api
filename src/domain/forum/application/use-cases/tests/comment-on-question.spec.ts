@@ -23,12 +23,13 @@ describe('Comment on Question', () => {
 
     const newContent = faker.lorem.text()
 
-    const { questionComment } = await sut.execute({
+    const result = await sut.execute({
       authorId: newQuestion.authorId.toString(),
       questionId: newQuestion.id,
       content: newContent
     })
 
-    expect(questionComment.content).toEqual(newContent)
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.questionComment.content).toEqual(newContent)
   })
 })

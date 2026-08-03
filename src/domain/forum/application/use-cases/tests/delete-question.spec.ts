@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { InMemoryQuestionRepository } from '../../../../../../test/repositories/in-memory-question-repository.js';
 import { makeQuestion } from '../../../../../../test/factories/make-question.js';
 import { DeleteQuestionUseCase } from '../delete-question.js';
+import { NotAllowedError } from '../errors/not-allowed-error.js';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository
 let sut: DeleteQuestionUseCase
@@ -22,11 +23,13 @@ describe('Delete a Question', () => {
     await sut.execute({ questionId: newQuestion.id.toString(), authorId: newQuestion.authorId })
 
     expect(inMemoryQuestionRepository.questions).toHaveLength(1)
-    await expect(() =>
-      sut.execute({
-        questionId: newQuestion2.id.toString(),
-        authorId: newQuestion.authorId
-      })
-    ).rejects.toBeInstanceOf(Error)
+
+    const result = await sut.execute({
+      questionId: newQuestion2.id.toString(),
+      authorId: newQuestion.authorId
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

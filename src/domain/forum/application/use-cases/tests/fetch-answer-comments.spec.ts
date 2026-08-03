@@ -24,9 +24,10 @@ describe('Fetch Answer Comments', () => {
       answerId: new UniqueEntityId('dbab5e10-eab5-4f0c-8b87-2557727ff9f2')
     }))
 
-    const { answerComments } = await sut.execute({ answerId: 'dbab5e10-eab5-4f0c-8b87-2557727ff9f2', page: 1 })
+    const result = await sut.execute({ answerId: 'dbab5e10-eab5-4f0c-8b87-2557727ff9f2', page: 1 })
 
-    expect(answerComments).toHaveLength(3)
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.answerComments).toHaveLength(3)
   })
 
   it('should be able to fetch paginated answer comments', async () => {
@@ -36,8 +37,9 @@ describe('Fetch Answer Comments', () => {
       }))
     }
 
-    const { answerComments } = await sut.execute({ answerId: 'dbab5e10-eab5-4f0c-8b87-2557727ff9f2', page: 2 })
+    const result = await sut.execute({ answerId: 'dbab5e10-eab5-4f0c-8b87-2557727ff9f2', page: 2 })
 
-    expect(answerComments).toHaveLength(2)
+    expect(result.isRight()).toBe(true)
+    expect(result.value?.answerComments).toHaveLength(2)
   })
 })

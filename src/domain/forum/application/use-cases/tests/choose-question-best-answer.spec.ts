@@ -26,8 +26,9 @@ describe('Choose question best answer', () => {
     inMemoryQuestionRepository.create(newQuestion)
     inMemoryAnswerRepository.create(newAnswer)
 
-    const { question } = await sut.execute({ answerId: newAnswer.id.toString(), authorId: newQuestion.authorId })
+    const result = await sut.execute({ answerId: newAnswer.id.toString(), authorId: newQuestion.authorId })
 
-    expect(question.bestAnswerId).toEqual(newAnswer.id)
+    expect(result.isRight()).toBe(true)
+    expect(result.value.question.bestAnswerId).toEqual(newAnswer.id)
   })
 })

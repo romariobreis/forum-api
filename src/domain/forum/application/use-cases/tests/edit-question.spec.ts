@@ -3,6 +3,7 @@ import { InMemoryQuestionRepository } from '../../../../../../test/repositories/
 import { makeQuestion } from '../../../../../../test/factories/make-question.js';
 import { EditQuestionUseCase } from '../edit-question.js';
 import { faker } from '@faker-js/faker';
+import { NotAllowedError } from '../errors/not-allowed-error.js';
 
 let inMemoryQuestionRepository: InMemoryQuestionRepository
 let sut: EditQuestionUseCase
@@ -26,17 +27,20 @@ describe('Edit a Question', () => {
     const newTitle = faker.lorem.sentence()
     const newContent = faker.lorem.text()
 
-    const { question } = await sut.execute({ questionId: newQuestion.id.toString(), authorId: newQuestion.authorId, title: newTitle, content: newContent })
+    let result = await sut.execute({ questionId: newQuestion.id.toString(), authorId: newQuestion.authorId, title: newTitle, content: newContent })
 
-    expect(question.title).toEqual(newTitle)
-    expect(question.content).toEqual(newContent)
-    await expect(() =>
-      sut.execute({
-        questionId: newQuestion2.id.toString(),
-        authorId: newQuestion.authorId,
-        title: newTitle,
-        content: newContent
-      })
-    ).rejects.toBeInstanceOf(Error)
+    expect(result.isRight()).toBe(true)
+    expect(result.value.question.title).toEqual(newTitle)
+    expect(result.value.question.content).toEqual(newContent)
+
+    result = await sut.execute({
+      questionId: newQuestion2.id.toString(),
+      authorId: newQuestion.authorId,
+      title: newTitle,
+      content: newContent
+    })
+
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })

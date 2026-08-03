@@ -3,6 +3,7 @@ import { InMemoryAnswerRepository } from '../../../../../../test/repositories/in
 import { makeAnswer } from '../../../../../../test/factories/make-answer.js';
 import { faker } from '@faker-js/faker';
 import { EditAnswerUseCase } from '../edit-anwer.js';
+import { NotAllowedError } from '../errors/not-allowed-error.js';
 
 let inMemoryAnswerRepository: InMemoryAnswerRepository
 let sut: EditAnswerUseCase
@@ -24,15 +25,20 @@ describe('Edit a Answer', () => {
 
     const newContent = faker.lorem.text()
 
-    const { answer } = await sut.execute({ answerId: newAnswer.id.toString(), authorId: newAnswer.authorId, content: newContent })
+    let result = await sut.execute({ answerId: newAnswer.id.toString(), authorId: newAnswer.authorId, content: newContent })
 
-    expect(answer.content).toEqual(newContent)
-    await expect(() =>
-      sut.execute({
-        answerId: newAnswer2.id.toString(),
-        authorId: newAnswer.authorId,
-        content: newContent
-      })
-    ).rejects.toBeInstanceOf(Error)
+    if (result.isRight()) {
+      expect(result.value.answer.content).toEqual(newContent)
+    } else {
+      throw new Error('Expected result to be right')
+    }
+
+    result = await sut.execute({
+      answerId: newAnswer2.id.toString(),
+      authorId: newAnswer.authorId,
+      content: newContent
+    })
+    expect(result.isLeft()).toBe(true)
+    expect(result.value).toBeInstanceOf(NotAllowedError)
   })
 })
