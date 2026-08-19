@@ -15,8 +15,11 @@ describe('Create a question', () => {
     const result = await sut.execute({
       authorId: '3bbc81b5-70bf-4e89-ad05-b7efefbe32ae',
       title: 'First question',
-      content: 'test question'
+      content: 'test question',
+      attachmentIds: ['1', '2']
     })
+
+    console.log(inMemoryQuestionRepository.questions[0]?.attachments)
 
     expect(result.isRight()).toBe(true)
     expect(result.value?.question.slug.value).toEqual('first-question')
